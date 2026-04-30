@@ -175,3 +175,27 @@ body {
   aspect-ratio: 4 / 5;
   object-fit: cover;
 }
+/* ukuran card lebih kecil */
+#newsGrid article {
+  border-radius: 18px;
+  overflow: hidden;
+  transform: scale(0.95);
+}
+
+/* gambar portrait kecil */
+#newsGrid article img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+#newsGrid h3 {
+  font-size: 14px;
+}
+
+#newsGrid p {
+  font-size: 11px;
+}
+#newsGrid article:hover {
+  transform: scale(1.02);
+  transition: 0.3s;
+}
