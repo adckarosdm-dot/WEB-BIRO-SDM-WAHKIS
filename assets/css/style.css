@@ -240,3 +240,45 @@ body {
 #galleryGrid article p {
   font-size: 10px;
 }
+/* Dokumen: style feed Instagram */
+#documentsList {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  #documentsList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  #documentsList {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+#documentsList a {
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+#documentsList a > div:first-child {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 10px;
+}
+
+#documentsList h3 {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+#documentsList p {
+  font-size: 10px;
+}
