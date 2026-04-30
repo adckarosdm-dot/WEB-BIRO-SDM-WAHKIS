@@ -199,3 +199,44 @@ body {
   transform: scale(1.02);
   transition: 0.3s;
 }
+/* Galeri: 5 kolom dan ukuran lebih kecil */
+#galleryGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  #galleryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  #galleryGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+#galleryGrid article {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+#galleryGrid article img {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+#galleryGrid article .p-6 {
+  padding: 14px;
+}
+
+#galleryGrid article h3 {
+  font-size: 14px;
+}
+
+#galleryGrid article p {
+  font-size: 10px;
+}
