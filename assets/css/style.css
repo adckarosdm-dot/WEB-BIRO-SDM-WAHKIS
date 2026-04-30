@@ -155,3 +155,23 @@ body {
 @media (max-width: 768px) {
   .admin-sidebar { border-radius: 0; }
 }
+
+/* Membuat gambar berita menjadi portrait */
+#newsGrid article > img {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+/* Membuat card berita lebih rapi */
+#newsGrid article {
+  overflow: hidden;
+}
+
+#galleryGrid article > img {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
