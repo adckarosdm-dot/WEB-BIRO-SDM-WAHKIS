@@ -197,28 +197,12 @@
   }
 
   function renderDocuments(rows) {
-  const list = $('documentsList');
-  if (!rows.length) {
-    list.innerHTML = emptyCard('Belum ada dokumen publik.');
-    return;
-  }
-
-  list.innerHTML = rows.map((d) => `
-    <a href="${esc(d.file_url)}" target="_blank" rel="noopener" class="card-soft card-hover document-card block">
-      <div class="pdf-preview">
-        <iframe src="${esc(d.file_url)}#toolbar=0" loading="lazy"></iframe>
-      </div>
-      <div class="p-doc">
-        <p class="text-[9px] font-black text-amber-700 uppercase tracking-widest mb-2">
-          ${esc(d.category || 'Dokumen')} ${d.year ? esc(d.year) : ''}
-        </p>
-        <h3 class="font-black leading-snug">${esc(d.title)}</h3>
-        <p class="text-xs text-gray-500 font-semibold mt-3 line-clamp-2">${esc(d.description || '')}</p>
-      </div>
-    </a>
-  `).join('');
-}
-  list.innerHTML = rows.map((d) => `
+    const list = $('documentsList');
+    if (!rows.length) {
+      list.innerHTML = emptyCard('Belum ada dokumen publik.');
+      return;
+    }
+    list.innerHTML = rows.map((d) => `
       <a href="${esc(d.file_url)}" target="_blank" rel="noopener" class="card-soft card-hover p-6 block">
         <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-5"><i class="fa-solid fa-file-pdf"></i></div>
         <p class="text-[9px] font-black text-amber-700 uppercase tracking-widest mb-2">${esc(d.category || 'Dokumen')} ${d.year ? esc(d.year) : ''}</p>
