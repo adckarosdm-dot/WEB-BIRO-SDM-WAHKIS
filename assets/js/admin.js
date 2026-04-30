@@ -318,15 +318,16 @@
     showLoader(true);
     try {
       const id = value('section_id');
-      const payload = {
-        id: id || undefined,
-        name: value('section_name'),
-        description: value('section_description'),
-        duties: value('section_duties'),
-        sort_order: numberValue('section_sort_order', 1),
-        is_active: checked('section_is_active'),
-        updated_at: new Date().toISOString()
-      };
+  const payload = {
+  id: id || undefined,
+  name: value('section_name'),
+  icon_class: value('section_icon_class') || 'fa-sitemap',
+  description: value('section_description'),
+  duties: value('section_duties'),
+  sort_order: numberValue('section_sort_order', 1),
+  is_active: checked('section_is_active'),
+  updated_at: new Date().toISOString()
+};
       if (!id) delete payload.id;
       await upsert('sections', payload);
       resetForm('sectionForm');
@@ -482,8 +483,14 @@
       setValue('officer_id', item.id); setValue('officer_rank', item.rank); setValue('officer_name', item.name); setValue('officer_position', item.position); setValue('officer_photo_url', item.photo_url); setValue('officer_description', item.description); setValue('officer_sort_order', item.sort_order || 1); setChecked('officer_is_active', item.is_active);
     }
     if (type === 'section') {
-      setValue('section_id', item.id); setValue('section_name', item.name); setValue('section_description', item.description); setValue('section_duties', item.duties); setValue('section_sort_order', item.sort_order || 1); setChecked('section_is_active', item.is_active);
-    }
+  setValue('section_id', item.id); 
+  setValue('section_name', item.name); 
+  setValue('section_icon_class', item.icon_class || 'fa-sitemap');
+  setValue('section_description', item.description); 
+  setValue('section_duties', item.duties); 
+  setValue('section_sort_order', item.sort_order || 1); 
+  setChecked('section_is_active', item.is_active);
+}
     if (type === 'news') {
       setValue('news_id', item.id); setValue('news_title', item.title); setValue('news_category', item.category); setValue('news_image_url', item.image_url); setValue('news_status', item.status || 'draft'); setValue('news_body', item.body);
     }
