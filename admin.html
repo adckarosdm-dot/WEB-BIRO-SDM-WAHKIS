@@ -221,34 +221,35 @@
           <div id="documentsListAdmin" class="grid gap-4"></div>
         </section>
 
-        <section id="tab-announcements" class="tab-panel hidden space-y-6">
-          <form id="announcementForm" class="card-soft p-7 grid gap-5">
-            <input id="announcement_id" type="hidden" />
-            <div class="grid md:grid-cols-3 gap-5">
-              <div><label class="label">Judul</label><input id="announcement_title" class="input" required /></div>
-              <div><label class="label">Mulai</label><input id="announcement_start_date" type="date" class="input" /></div>
-              <div><label class="label">Berakhir</label><input id="announcement_end_date" type="date" class="input" /></div>
-            </div>
-            <div class="grid md:grid-cols-3 gap-5">
-              <div><label class="label">URL Lampiran</label><input id="announcement_attachment_url" class="input" /></div>
-              <div><label class="label">Upload Lampiran</label><input id="announcement_file" type="file" class="input" /></div>
-              <div><label class="label">Status</label><select id="announcement_status" class="select"><option value="published">published</option><option value="draft">draft</option><option value="archived">archived</option></select></div>
-            </div>
-            <div><label class="label">Isi Pengumuman</label><textarea id="announcement_body" class="textarea"></textarea></div>
-            <label class="inline-flex gap-3 items-center font-bold"><input id="announcement_is_pinned" type="checkbox" /> Jadikan prioritas</label>
-            <div class="flex gap-3"><button class="btn-gold">Simpan Pengumuman</button><button type="button" data-reset="announcementForm" class="btn-light">Reset</button></div>
-          </form>
-          <div id="announcementsListAdmin" class="grid gap-4"></div>
-          <section id="tab-reports" class="tab-panel hidden space-y-6">
+<section id="tab-announcements" class="tab-panel hidden space-y-6">
+  <form id="announcementForm" class="card-soft p-7 grid gap-5">
+    <input id="announcement_id" type="hidden" />
+    <div class="grid md:grid-cols-3 gap-5">
+      <div><label class="label">Judul</label><input id="announcement_title" class="input" required /></div>
+      <div><label class="label">Mulai</label><input id="announcement_start_date" type="date" class="input" /></div>
+      <div><label class="label">Berakhir</label><input id="announcement_end_date" type="date" class="input" /></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div><label class="label">URL Lampiran</label><input id="announcement_attachment_url" class="input" /></div>
+      <div><label class="label">Upload Lampiran</label><input id="announcement_file" type="file" class="input" /></div>
+      <div><label class="label">Status</label><select id="announcement_status" class="select"><option value="published">published</option><option value="draft">draft</option><option value="archived">archived</option></select></div>
+    </div>
+    <div><label class="label">Isi Pengumuman</label><textarea id="announcement_body" class="textarea"></textarea></div>
+    <label class="inline-flex gap-3 items-center font-bold"><input id="announcement_is_pinned" type="checkbox" /> Jadikan prioritas</label>
+    <div class="flex gap-3"><button class="btn-gold">Simpan Pengumuman</button><button type="button" data-reset="announcementForm" class="btn-light">Reset</button></div>
+  </form>
+  <div id="announcementsListAdmin" class="grid gap-4"></div>
+</section>
 
-  <!-- FORM -->
+<section id="tab-reports" class="tab-panel hidden space-y-6">
   <form id="reportForm" class="card-soft p-7 grid gap-5">
     <input id="report_id" type="hidden" />
 
     <div class="grid md:grid-cols-3 gap-5">
       <div>
         <label class="label">Polres</label>
-        <select id="report_polres_name" class="select">
+        <select id="report_polres_name" class="select" required>
+          <option value="">Pilih Polres</option>
           <option>POLRESTA DENPASAR</option>
           <option>POLRES BADUNG</option>
           <option>POLRES GIANYAR</option>
@@ -263,7 +264,8 @@
 
       <div>
         <label class="label">Bag/Subbag</label>
-        <select id="report_bag_subbag" class="select">
+        <select id="report_bag_subbag" class="select" required>
+          <option value="">Pilih Bag/Subbag</option>
           <option>BAG DALPERS</option>
           <option>BAG BINKAR</option>
           <option>BAG WATPERS</option>
@@ -273,56 +275,52 @@
       </div>
 
       <div>
-        <label class="label">Tanggal</label>
+        <label class="label">Tanggal Kegiatan</label>
         <input id="report_activity_date" type="date" class="input" />
       </div>
     </div>
 
-    <div>
-      <label class="label">Judul</label>
-      <input id="report_title" class="input" />
-    </div>
+    <div><label class="label">Judul Laporan</label><input id="report_title" class="input" required /></div>
+    <div><label class="label">Upload Foto</label><input id="report_file" type="file" accept="image/*" class="input" /></div>
+    <div><label class="label">Deskripsi</label><textarea id="report_description" class="textarea"></textarea></div>
 
-    <div>
-      <label class="label">Upload Foto</label>
-      <input id="report_file" type="file" class="input" />
-    </div>
-
-    <div>
-      <label class="label">Deskripsi</label>
-      <textarea id="report_description" class="textarea"></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button class="btn-gold">Simpan</button>
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn-gold">Simpan Laporan</button>
+      <button type="button" data-reset="reportForm" class="btn-light">Reset</button>
       <button type="button" id="downloadReportExcel" class="btn-primary">
-        Download Excel
+        <i class="fa-solid fa-file-excel mr-2"></i> Download Excel
       </button>
     </div>
   </form>
 
-  <!-- FILTER -->
   <div class="card-soft p-5 grid md:grid-cols-3 gap-4">
     <select id="filter_polres" class="select">
       <option value="">Semua Polres</option>
       <option>POLRESTA DENPASAR</option>
       <option>POLRES BADUNG</option>
       <option>POLRES GIANYAR</option>
+      <option>POLRES TABANAN</option>
+      <option>POLRES BULELENG</option>
+      <option>POLRES JEMBRANA</option>
+      <option>POLRES KLUNGKUNG</option>
+      <option>POLRES BANGLI</option>
+      <option>POLRES KARANGASEM</option>
     </select>
 
     <select id="filter_bag_subbag" class="select">
-      <option value="">Semua Bag</option>
+      <option value="">Semua Bag/Subbag</option>
       <option>BAG DALPERS</option>
       <option>BAG BINKAR</option>
+      <option>BAG WATPERS</option>
+      <option>BAG PSI</option>
+      <option>SUBBAG RENMIN</option>
     </select>
 
-    <button id="resetReportFilter" class="btn-light">Reset</button>
+    <button type="button" id="resetReportFilter" class="btn-light">Reset Filter</button>
   </div>
 
   <div id="reportsList" class="grid gap-4"></div>
-
 </section>
-        </section>
       </section>
     </div>
   </main>
@@ -335,3 +333,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
