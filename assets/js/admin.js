@@ -156,9 +156,46 @@
     renderGallery();
     renderDocuments();
     renderAnnouncements();
-    function getFilteredReports() {
+  }
+  function getFilteredReports() {
   const polres = value('filter_polres');
   const bag = value('filter_bag_subbag');
+
+  return state.reports.filter((r) => {
+    return (!polres || r.polres_name === polres) &&
+           (!bag || r.bag_subbag === bag);
+  });
+}
+
+function renderReports() {
+  const list = $('reportsList');
+  if (!list) return;
+
+  const rows = getFilteredReports();
+
+  list.innerHTML = rows.map((r) => `
+    <article class="table-card flex flex-col md:flex-row md:items-center gap-4 md:justify-between">
+      <div class="flex gap-4 items-center">
+        <img src="${esc(r.image_url || '')}" class="w-20 h-16 rounded-2xl object-cover bg-gray-100" />
+        <div>
+          <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest">
+            ${esc(r.polres_name)} • ${esc(r.bag_subbag)}
+          </p>
+          <h3 class="font-black">${esc(r.title)}</h3>
+          <p class="text-xs text-gray-400 font-bold">${esc(r.activity_date || '-')}</p>
+          <p class="text-xs text-gray-500 font-semibold line-clamp-2">${esc(r.description || '')}</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="action-btn bg-blue-50 text-blue-700" data-edit="report" data-id="${esc(r.id)}">Edit</button>
+        <button class="action-btn bg-red-50 text-red-700" data-delete="report" data-id="${esc(r.id)}">Hapus</button>
+      </div>
+    </article>
+  `).join('') || emptyList('Belum ada laporan.');
+}
+    announcements: ['created_at', false],
+reports: ['created_at', false]
 
   return state.reports.filter((r) => {
     return (!polres || r.polres_name === polres) &&
@@ -546,7 +583,7 @@ function downloadReportsExcel() {
       news: ['created_at', false],
       gallery: ['created_at', false],
       documents: ['created_at', false],
-      announcements: ['created_at', false]
+      announcements: ['created_at', false],
       reports: ['created_at', false]
     };
     const [column, ascending] = orderMap[table];
