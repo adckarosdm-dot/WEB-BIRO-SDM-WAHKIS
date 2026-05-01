@@ -14,7 +14,8 @@
     news: [],
     gallery: [],
     documents: [],
-    announcements: []
+    announcements: [],
+    reports: []
   };
 
   const typeMap = {
@@ -23,7 +24,8 @@
     news: { table: 'news', state: 'news', form: 'newsForm', prefix: 'news' },
     gallery: { table: 'gallery', state: 'gallery', form: 'galleryForm', prefix: 'gallery' },
     document: { table: 'documents', state: 'documents', form: 'documentForm', prefix: 'document' },
-    announcement: { table: 'announcements', state: 'announcements', form: 'announcementForm', prefix: 'announcement' }
+    announcement: { table: 'announcements', state: 'announcements', form: 'announcementForm', prefix: 'announcement' },
+    report: { table: 'reports', state: 'reports', form: 'reportForm', prefix: 'report' }
   };
 
   function esc(value) {
@@ -122,7 +124,8 @@
         loadTable('news', { order: 'created_at', ascending: false }),
         loadTable('gallery', { order: 'created_at', ascending: false }),
         loadTable('documents', { order: 'created_at', ascending: false }),
-        loadTable('announcements', { order: 'created_at', ascending: false })
+        loadTable('announcements', { order: 'created_at', ascending: false }),
+        loadTable('reports', { order: 'created_at', ascending: false })
       ]);
       renderAll();
     } finally {
@@ -153,6 +156,44 @@
     renderGallery();
     renderDocuments();
     renderAnnouncements();
+    function getFilteredReports() {
+  const polres = value('filter_polres');
+  const bag = value('filter_bag_subbag');
+
+  return state.reports.filter((r) => {
+    return (!polres || r.polres_name === polres) &&
+           (!bag || r.bag_subbag === bag);
+  });
+}
+
+function renderReports() {
+  const list = $('reportsList');
+  if (!list) return;
+
+  const rows = getFilteredReports();
+
+  list.innerHTML = rows.map((r) => `
+    <article class="table-card flex flex-col md:flex-row md:items-center gap-4 md:justify-between">
+      <div class="flex gap-4 items-center">
+        <img src="${esc(r.image_url || '')}" class="w-20 h-16 rounded-2xl object-cover bg-gray-100" />
+        <div>
+          <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest">
+            ${esc(r.polres_name)} • ${esc(r.bag_subbag)}
+          </p>
+          <h3 class="font-black">${esc(r.title)}</h3>
+          <p class="text-xs text-gray-400 font-bold">${esc(r.activity_date || '-')}</p>
+          <p class="text-xs text-gray-500 font-semibold line-clamp-2">${esc(r.description || '')}</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="action-btn bg-blue-50 text-blue-700" data-edit="report" data-id="${esc(r.id)}">Edit</button>
+        <button class="action-btn bg-red-50 text-red-700" data-delete="report" data-id="${esc(r.id)}">Hapus</button>
+      </div>
+    </article>
+  `).join('') || emptyList('Belum ada laporan.');
+}
+    renderReports();
   }
 
   function renderCounts() {
@@ -437,7 +478,62 @@
     } catch (err) { alert(err.message || err); }
     finally { showLoader(false); }
   }
+async function saveReport(e) {
+  e.preventDefault();
+  showLoader(true);
 
+  try {
+    const id = value('report_id');
+    const old = state.reports.find((x) => x.id === id) || {};
+
+    const payload = {
+      id: id || undefined,
+      polres_name: value('report_polres_name'),
+      bag_subbag: value('report_bag_subbag'),
+      title: value('report_title'),
+      activity_date: value('report_activity_date') || null,
+      description: value('report_description'),
+      image_url: await uploadIfSelected('report_file', 'reports', old.image_url || ''),
+      updated_at: new Date().toISOString()
+    };
+
+    if (!id) delete payload.id;
+
+    await upsert('reports', payload);
+    resetForm('reportForm');
+    await reloadAndRender('reports');
+
+    alert('Laporan berhasil disimpan.');
+  } catch (err) {
+    alert(err.message || err);
+  } finally {
+    showLoader(false);
+  }
+}
+
+function downloadReportsExcel() {
+  if (!window.XLSX) {
+    alert('Library Excel belum terbaca. Pastikan script xlsx sudah ditambahkan di admin.html.');
+    return;
+  }
+
+  const rows = getFilteredReports().map((item, index) => ({
+    No: index + 1,
+    Polres: item.polres_name,
+    Bag_Subbag: item.bag_subbag,
+    Judul_Laporan: item.title,
+    Tanggal_Kegiatan: item.activity_date,
+    Deskripsi: item.description,
+    Link_Foto: item.image_url,
+    Dibuat: item.created_at
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Laporan Polres');
+  XLSX.writeFile(workbook, 'laporan-polres.xlsx');
+}
   async function upsert(table, payload) {
     const { error } = await db.from(table).upsert(payload);
     if (error) throw error;
@@ -451,6 +547,7 @@
       gallery: ['created_at', false],
       documents: ['created_at', false],
       announcements: ['created_at', false]
+      reports: ['created_at', false]
     };
     const [column, ascending] = orderMap[table];
     await loadTable(table, { order: column, ascending });
@@ -461,6 +558,7 @@
     if (table === 'gallery') renderGallery();
     if (table === 'documents') renderDocuments();
     if (table === 'announcements') renderAnnouncements();
+    if (table === 'reports') renderReports();
   }
 
   function resetForm(formId) {
@@ -503,6 +601,14 @@
     if (type === 'announcement') {
       setValue('announcement_id', item.id); setValue('announcement_title', item.title); setValue('announcement_body', item.body); setValue('announcement_attachment_url', item.attachment_url); setValue('announcement_start_date', item.start_date); setValue('announcement_end_date', item.end_date); setValue('announcement_status', item.status || 'draft'); setChecked('announcement_is_pinned', item.is_pinned);
     }
+    if (type === 'report') {
+    setValue('report_id', item.id);
+    setValue('report_polres_name', item.polres_name);
+    setValue('report_bag_subbag', item.bag_subbag);
+    setValue('report_title', item.title);
+    setValue('report_activity_date', item.activity_date);
+    setValue('report_description', item.description);
+}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -569,6 +675,15 @@
   $('galleryForm')?.addEventListener('submit', saveGallery);
   $('documentForm')?.addEventListener('submit', saveDocument);
   $('announcementForm')?.addEventListener('submit', saveAnnouncement);
+  $('reportForm')?.addEventListener('submit', saveReport);
+  $('downloadReportExcel')?.addEventListener('click', downloadReportsExcel);
+  $('filter_polres')?.addEventListener('change', renderReports);
+  $('filter_bag_subbag')?.addEventListener('change', renderReports);
+  $('resetReportFilter')?.addEventListener('click', () => {
+    setValue('filter_polres', '');
+    setValue('filter_bag_subbag', '');
+    renderReports();
+});
 
   requireAdmin();
 })();
